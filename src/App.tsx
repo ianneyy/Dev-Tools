@@ -1,5 +1,5 @@
 // src/App.tsx
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 export default function App() {
   return (
