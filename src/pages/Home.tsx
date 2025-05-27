@@ -8,7 +8,7 @@ export default function Home() {
         regular: "Development Tools & Resources ",
         gradient: "for every web developer",
       }}
-      description="Empower your workflow with a curated suite of tools and resources designed to help you build, test, and launch with confidence."
+      description=""
       ctaText="Browse"
       ctaHref="/components"
       gridOptions={{
