@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -40,7 +40,14 @@ export default function Developer() {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
-              <ModeToggle />
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">Developer Platforms</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbItem className="hidden md:block">
+                  <ModeToggle />
+                </BreadcrumbItem>
+              </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>

@@ -1,6 +1,9 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -58,7 +61,14 @@ export default function Animation() {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
-              <ModeToggle />
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">Animation & Effects</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbItem className="hidden md:block">
+                  <ModeToggle />
+                </BreadcrumbItem>
+              </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
@@ -68,8 +78,6 @@ export default function Animation() {
               <BentoCard key={feature.name} {...feature} />
             ))}
           </BentoGrid>
-
-         
         </div>
       </SidebarInset>
     </SidebarProvider>

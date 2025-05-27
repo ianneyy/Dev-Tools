@@ -1,7 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
-
+  BreadcrumbList,
+  BreadcrumbLink, BreadcrumbItem
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -11,10 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 
-
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-
-
 
 const features = [
   {
@@ -80,8 +78,6 @@ const features2 = [
   },
 ];
 
-
-
 export default function Components() {
   return (
     <SidebarProvider>
@@ -92,7 +88,16 @@ export default function Components() {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
-              <ModeToggle />
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    UI Components
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbItem className="hidden md:block">
+                  <ModeToggle />
+                </BreadcrumbItem>
+              </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
@@ -102,11 +107,11 @@ export default function Components() {
               <BentoCard key={feature.name} {...feature} />
             ))}
           </BentoGrid>
-            <BentoGrid className="lg:grid-rows-3">
-                      {features2.map((features2) => (
-                        <BentoCard key={features2.name} {...features2} />
-                      ))}
-                    </BentoGrid>
+          <BentoGrid className="lg:grid-rows-3">
+            {features2.map((features2) => (
+              <BentoCard key={features2.name} {...features2} />
+            ))}
+          </BentoGrid>
         </div>
       </SidebarInset>
     </SidebarProvider>
