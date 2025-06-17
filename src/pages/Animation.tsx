@@ -16,6 +16,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Dialog03 from "@/components/dialog-1";
 
 
 // const features = [
@@ -186,6 +187,9 @@ export default function Animation() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
+        <div className="fixed flex justify-center items-center h-screen z-50">
+                  <Dialog03 />
+                </div>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
