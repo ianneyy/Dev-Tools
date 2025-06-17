@@ -2,13 +2,13 @@ import * as React from "react"
 import {
   AudioWaveform,
   Command,
-  
+  Wand,
   GalleryVerticalEnd,
   Layers,
   Image,
   PlayCircle,
-  Droplet,
   Terminal,
+  Link,
 } from "lucide-react";
 
 
@@ -64,14 +64,19 @@ const data = {
       icon: PlayCircle,
     },
     {
-      name: "Color & Styling Tools",
+      name: "Layout & Styling Tools",
       url: "/color",
-      icon: Droplet,
+      icon: Wand,
     },
     {
       name: "Developer Platforms",
       url: "/developer",
       icon: Terminal,
+    },
+    {
+      name: "API",
+      url: "/api",
+      icon: Link,
     },
   ],
 };
@@ -79,15 +84,11 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      {/* <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader> */}
+     
       <SidebarContent>
         <NavProjects projects={data.projects} />
       </SidebarContent>
-      {/* <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter> */}
+     
       <SidebarRail />
     </Sidebar>
   )

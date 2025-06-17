@@ -9,6 +9,7 @@ import Color from "@/pages/Color";
 import Illustration from "@/pages/Illustration";
 import Developer from "@/pages/Developer";
 import Animation from "@/pages/Animation";
+import Api from "@/pages/Api";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "animation",
         element: <Animation />,
+      },
+      {
+        path: "api",
+        element: <Api />,
       },
     ],
   },

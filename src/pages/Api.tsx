@@ -1,9 +1,9 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbLink,
   BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -12,101 +12,38 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
+
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import { Button } from "@/components/ui/button";
-import Dialog03 from "@/components/dialog-1";
+
 
 // const features = [
 //   {
-//     name: "21st.dev",
-//     description: "Discover, share & remix the best UI components",
-//     href: "https://21st.dev/",
+//     name: "CurrencyScoop",
+//     description: "Get exchange rates and convert currencies in real-time",
+//     href: "https://currencybeacon.com/",
 //     cta: "Browse",
 //     background: (
 //       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
 //         <iframe
-//           src="https://21st.dev/"
+//           src="https://currencybeacon.com/"
 //           className="h-full w-full scale-[1.2] transform rounded-xl"
 //         />
 //       </div>
 //     ),
-//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
+//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-3",
 //   },
 //   {
-//     name: "Shadcn",
-//     description: "Build your React component library",
-//     href: "https://ui.shadcn.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://ui.shadcn.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
-//   },
-//   {
-//     name: "DaisyUI",
-//     description: "Faster, cleaner, easier Tailwind CSS development",
-//     href: "https://daisyui.com/",
-//     cta: "Learn more",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://daisyui.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
-//   },
-//   {
-//     name: "HeadlessUI",
-//     description: "Faster, cleaner, easier Tailwind CSS development",
-//     href: "https://headlessui.com/",
-//     cta: "Learn more",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://headlessui.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-2",
-//   },
-//   {
-//     name: "Radix UI",
-//     description: "Unstyled, accessible components for React",
-//     href: "https://www.radix-ui.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://www.radix-ui.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-3 lg:col-end-3 lg:row-start-2 lg:row-end-4",
-//   },
-// ];
-
-// const features2 = [
-//   {
-//     name: "Blade Icons",
+//     name: "Rapid API",
 //     description:
-//       "A package to easily make use of SVG icons in your Laravel Blade views. Choose from a wide selection of icon sets. ",
-//     href: "https://blade-ui-kit.com/blade-icons",
+//       "A marketplace that connects developers with thousands of APIs, enabling easy discovery, testing, and integration in one platform.",
+//     href: "https://rapidapi.com/",
 //     cta: "Browse",
 //     background: (
 //       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
 //         <iframe
-//           src="https://blade-ui-kit.com/blade-icons"
+//           src="https://rapidapi.com/"
 //           className="h-full w-full scale-[1.2] transform rounded-xl"
 //         />
 //       </div>
@@ -114,20 +51,66 @@ import Dialog03 from "@/components/dialog-1";
 //     className: "lg:row-start-1 lg:row-end-2 lg:col-start-1 lg:col-end-2",
 //   },
 //   {
-//     name: "Flowbite",
+//     name: "SerpAPI",
 //     description:
-//       "Build websites even faster with components on top of Tailwind CSS",
-//     href: "https://flowbite.com/",
+//       "Real-time API that scrapes and delivers search engine results from Google, Bing, and others in a structured format.",
+//     href: "https://serpapi.com/",
 //     cta: "Browse",
 //     background: (
 //       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
 //         <iframe
-//           src="https://flowbite.com/"
+//           src="https://serpapi.com/"
 //           className="h-full w-full scale-[1.2] transform rounded-xl"
 //         />
 //       </div>
 //     ),
-//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-3",
+//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-3 lg:col-end-4",
+//   },
+//   {
+//     name: "Resend",
+//     description: "Send transactional emails easily (auth codes, receipt, etc.)",
+//     href: "https://resend.com/",
+//     cta: "Browse",
+//     background: (
+//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+//         <iframe
+//           src="https://resend.com/"
+//           className="h-full w-full scale-[1.2] transform rounded-xl"
+//         />
+//       </div>
+//     ),
+//     className: "lg:row-start-2 lg:row-end-3 lg:col-start-1 lg:col-end-1",
+//   },
+
+//   {
+//     name: "Public APIs",
+//     description: "A curated list of free public APIs for development.",
+//     href: "https://public-apis.io/",
+//     cta: "Browse",
+//     background: (
+//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+//         <iframe
+//           src="https://public-apis.io/"
+//           className="h-full w-full scale-[1.2] transform rounded-xl"
+//         />
+//       </div>
+//     ),
+//     className: "lg:row-start-3 lg:row-end-4 lg:col-start-1 lg:col-end-1",
+//   },
+//   {
+//     name: "API List",
+//     description: " Fun and useful free APIs, well-categorized.",
+//     href: "https://apilist.fun",
+//     cta: "Browse",
+//     background: (
+//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+//         <iframe
+//           src="https://apilist.fun"
+//           className="h-full w-full scale-[1.2] transform rounded-xl"
+//         />
+//       </div>
+//     ),
+//     className: "lg:row-start-2 lg:row-end-4 lg:col-start-2 lg:col-end-3",
 //   },
 // ];
 type Tool = {
@@ -137,7 +120,7 @@ type Tool = {
   link: string;
   category: string;
 };
-export default function Components() {
+export default function Api() {
   const [tools, setTools] = useState<Tool[]>([]);
   useEffect(() => {
     axios
@@ -177,19 +160,13 @@ export default function Components() {
         return "lg:row-start-auto lg:col-start-auto";
     }
   };
-  const filteredTools = tools.filter((tool) => tool.category === "components");
+  const filteredTools = tools.filter((tool) => tool.category === "api");
   const groupedTools = chunkArray(filteredTools, 5);
 
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        {/* <Button className="fixed bottom-4 right-4 z-50 rounded-full bg-blue-600 text-white p-4 shadow-lg hover:bg-blue-700 text-center flex items-center justify-center cursor-pointer transition h-12 w-12">
-          <Plus className="h-6 w-6" />
-        </Button> */}
-        <div className="fixed flex justify-center items-center h-screen z-50">
-          <Dialog03 />
-        </div>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -197,7 +174,7 @@ export default function Components() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">UI Components</BreadcrumbLink>
+                  <BreadcrumbLink href="#">API List</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbItem className="hidden md:block">
                   <ModeToggle />
@@ -226,11 +203,6 @@ export default function Components() {
               })}
             </BentoGrid>
           ))}
-          {/* <BentoGrid className="lg:grid-rows-3">
-            {features2.map((features2) => (
-              <BentoCard key={features2.name} {...features2} />
-            ))}
-          </BentoGrid> */}
         </div>
       </SidebarInset>
     </SidebarProvider>

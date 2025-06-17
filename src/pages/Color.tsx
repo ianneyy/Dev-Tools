@@ -14,18 +14,107 @@ import {
 import { ModeToggle } from "@/components/mode-toggle";
 
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-const features = [
-  {
-    name: "Colorffy",
-    description: "The easiest CSS Color Palette Generators.",
-    href: "https://colorffy.com/",
-    cta: "Browse",
-    background: <img className="absolute -top-20 -right-20 opacity-60" />,
-    className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
-  },
-];
 
+import { useEffect, useState } from "react";
+import axios from "axios";
+// const features = [
+//   {
+//     name: "Colorffy",
+//     description: "The easiest CSS Color Palette Generators.",
+//     href: "https://colorffy.com/",
+//     cta: "Browse",
+//     background: (
+//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+//         <iframe
+//           src="https://colorffy.com/"
+//           className="h-full w-full scale-[1.2] transform rounded-xl"
+//         />
+//       </div>
+//     ),
+//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
+//   },
+//   {
+//     name: "Realtime Colors",
+//     description: "Visualize Your Colors & Fonts On a Real Site",
+//     href: "https://realtimecolors.com/",
+//     cta: "Browse",
+//     background: (
+//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+//         <iframe
+//           src="https://realtimecolors.com/"
+//           className="h-full w-full scale-[1.2] transform rounded-xl"
+//         />
+//       </div>
+//     ),
+//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-1 lg:col-end-2",
+//   },
+//   {
+//     name: "Flexbox Labs",
+//     description: "A playground to learn and test CSS Flexbox layouts.",
+//     href: "https://flexboxlabs.netlify.app/",
+//     cta: "Browse",
+//     background: (
+//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+//         <iframe
+//           src="https://flexboxlabs.netlify.app/"
+//           className="h-full w-full scale-[1.2] transform rounded-xl"
+//         />
+//       </div>
+//     ),
+//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-3 lg:col-end-4",
+//   },
+// ];
+
+type Tool = {
+  id: number;
+  name: string;
+  description: string;
+  link: string;
+  category: string;
+};
 export default function Color() {
+  const [tools, setTools] = useState<Tool[]>([]);
+  useEffect(() => {
+    axios
+      .get("https://dev-tools-backend-aar6.onrender.com/tools")
+      .then((res) => setTools(res.data))
+      .catch((err) => console.error("Failed to fetch tools", err));
+  }, []);
+
+  const getBackground = (url: string) => (
+    <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
+      <iframe
+        src={url}
+        className="h-full w-full scale-[1.2] transform rounded-xl"
+      />
+    </div>
+  );
+  function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+    const result = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+  }
+  const getGridPosition = (index: number) => {
+    switch (index % 5) {
+      case 0:
+        return "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3";
+      case 1:
+        return "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3";
+      case 2:
+        return "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4";
+      case 3:
+        return "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-2";
+      case 4:
+        return "lg:col-start-3 lg:col-end-3 lg:row-start-2 lg:row-end-4";
+      default:
+        return "lg:row-start-auto lg:col-start-auto";
+    }
+  };
+  const filteredTools = tools.filter((tool) => tool.category === "color");
+  const groupedTools = chunkArray(filteredTools, 5);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -37,7 +126,9 @@ export default function Color() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Color & Styling</BreadcrumbLink>
+                  <BreadcrumbLink href="#">
+                    Layout & Styling Tools
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbItem className="hidden md:block">
                   <ModeToggle />
@@ -47,11 +138,25 @@ export default function Color() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <BentoGrid className="lg:grid-rows-3">
-            {features.map((feature) => (
-              <BentoCard key={feature.name} {...feature} />
-            ))}
-          </BentoGrid>
+          {groupedTools.map((group, groupIndex) => (
+            <BentoGrid key={groupIndex} className="lg:grid-rows-3">
+              {group.map((tool, index) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // const absoluteIndex = groupIndex * 5 + index;
+                return (
+                  <BentoCard
+                    key={tool.id}
+                    name={tool.name}
+                    description={tool.description}
+                    href={tool.link}
+                    cta="Browse"
+                    background={getBackground(tool.link)}
+                    className={getGridPosition(index)} // local index 0–4
+                  />
+                );
+              })}
+            </BentoGrid>
+          ))}
         </div>
       </SidebarInset>
     </SidebarProvider>
