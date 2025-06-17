@@ -98,24 +98,26 @@ interface DotsProps extends SpinnerProps {
 }
 
 export const Dots = ({ variant = "v1", ...props }: DotsProps) => {
-  switch (variant) {
-    case "v1":
-      return <Dots_v1 {...props} />
-    case "v2":
-      return <Dots_v2 {...props} />
-    case "v3":
-      return <Dots_v3 {...props} />
-    case "v4":
-      return <Dots_v4 {...props} />
-    case "v5":
-      return <Dots_v5 {...props} />
-    default:
-      return <Dots_v1 {...props} />
-  }
-}
+  const Component = variantMap[variant] || Dots_v1;
 
-export const Dots_v1 = () => (
-  <div className="w-fit">
+  return <ComponentWrapper Component={Component} {...props} />;
+};
+const ComponentWrapper = ({
+  Component,
+  ...props
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+}: { Component: React.ComponentType<any> } & SpinnerProps) => {
+  return <Component {...props} />;
+};
+
+export const Dots_v1 = ({ size, color }: SpinnerProps) => (
+  <div
+    className={cn(
+      "w-fit text-current",
+      sizesClasses[size as keyof SizeProps],
+      strokeClasses[color as keyof StrokeProps]
+    )}
+  >
     <div className="relative flex size-full items-center justify-start">
       <motion.span
         initial={{ scale: 0 }}
@@ -143,7 +145,7 @@ export const Dots_v1 = () => (
       ></motion.span>
     </div>
   </div>
-)
+);
 
 export const Dots_v2 = () => (
   <div className="flex items-center justify-center ">
@@ -253,3 +255,10 @@ export const Dots_v5 = () => {
     </div>
   )
 }
+const variantMap = {
+  v1: Dots_v1,
+  v2: Dots_v2,
+  v3: Dots_v3,
+  v4: Dots_v4,
+  v5: Dots_v5,
+};
