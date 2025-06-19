@@ -18,102 +18,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Dialog03 from "@/components/dialog-1";
 
+import { Skeleton } from "@/components/ui/skeleton";
 
-// const features = [
-//   {
-//     name: "CurrencyScoop",
-//     description: "Get exchange rates and convert currencies in real-time",
-//     href: "https://currencybeacon.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://currencybeacon.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-3",
-//   },
-//   {
-//     name: "Rapid API",
-//     description:
-//       "A marketplace that connects developers with thousands of APIs, enabling easy discovery, testing, and integration in one platform.",
-//     href: "https://rapidapi.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://rapidapi.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-1 lg:col-end-2",
-//   },
-//   {
-//     name: "SerpAPI",
-//     description:
-//       "Real-time API that scrapes and delivers search engine results from Google, Bing, and others in a structured format.",
-//     href: "https://serpapi.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://serpapi.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-3 lg:col-end-4",
-//   },
-//   {
-//     name: "Resend",
-//     description: "Send transactional emails easily (auth codes, receipt, etc.)",
-//     href: "https://resend.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://resend.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-2 lg:row-end-3 lg:col-start-1 lg:col-end-1",
-//   },
 
-//   {
-//     name: "Public APIs",
-//     description: "A curated list of free public APIs for development.",
-//     href: "https://public-apis.io/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://public-apis.io/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-3 lg:row-end-4 lg:col-start-1 lg:col-end-1",
-//   },
-//   {
-//     name: "API List",
-//     description: " Fun and useful free APIs, well-categorized.",
-//     href: "https://apilist.fun",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://apilist.fun"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-2 lg:row-end-4 lg:col-start-2 lg:col-end-3",
-//   },
-// ];
 type Tool = {
   id: number;
   name: string;
@@ -122,12 +29,19 @@ type Tool = {
   category: string;
 };
 export default function Api() {
+  const [loading, setLoading] = useState(true);
   const [tools, setTools] = useState<Tool[]>([]);
   useEffect(() => {
     axios
       .get("https://dev-tools-backend-aar6.onrender.com/tools")
-      .then((res) => setTools(res.data))
-      .catch((err) => console.error("Failed to fetch tools", err));
+      .then((res) => {
+        setTools(res.data);
+        setLoading(false); // ✅ stop showing skeleton
+      })
+      .catch((err) => {
+        console.error("Failed to fetch tools", err);
+        setLoading(false); // also stop loading on error
+      });
   }, []);
 
   const getBackground = (url: string) => (
@@ -169,8 +83,8 @@ export default function Api() {
       <AppSidebar />
       <SidebarInset>
         <div className="fixed flex justify-center items-center h-screen z-50">
-                  <Dialog03 />
-                </div>
+          <Dialog03 />
+        </div>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -188,25 +102,42 @@ export default function Api() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {groupedTools.map((group, groupIndex) => (
-            <BentoGrid key={groupIndex} className="lg:grid-rows-3">
-              {group.map((tool, index) => {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // const absoluteIndex = groupIndex * 5 + index;
-                return (
-                  <BentoCard
-                    key={tool.id}
-                    name={tool.name}
-                    description={tool.description}
-                    href={tool.link}
-                    cta="Browse"
-                    background={getBackground(tool.link)}
-                    className={getGridPosition(index)} // local index 0–4
-                  />
-                );
-              })}
-            </BentoGrid>
-          ))}
+          {loading
+            ? // Show skeletons while loading
+              Array(2)
+                .fill(0)
+                .map((_, groupIndex) => (
+                  <div key={groupIndex} className="flex gap-10 justify-between">
+                    {Array(3)
+                      .fill(0)
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="flex flex-col flex-1 gap-2 h-64 justify-end"
+                        >
+                          <Skeleton className="h-6 w-1/2 rounded-xl mb-3" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                        </div>
+                      ))}
+                  </div>
+                ))
+            : groupedTools.map((group, groupIndex) => (
+                <BentoGrid key={groupIndex} className="lg:grid-rows-3">
+                  {group.map((tool, index) => (
+                    <BentoCard
+                      key={tool.id}
+                      name={tool.name}
+                      description={tool.description}
+                      href={tool.link}
+                      cta="Browse"
+                      background={getBackground(tool.link)}
+                      className={getGridPosition(index)}
+                    />
+                  ))}
+                </BentoGrid>
+              ))}
         </div>
       </SidebarInset>
     </SidebarProvider>

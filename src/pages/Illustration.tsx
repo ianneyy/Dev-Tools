@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -18,41 +17,8 @@ import Dialog03 from "@/components/dialog-1";
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
-
-// const features = [
-//   {
-//     name: "UIverse",
-//     description: "The Largest Library of Open-Source UI",
-//     href: "https://uiverse.io/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://uiverse.io/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-3",
-//   },
-//   {
-//     name: "unDraw",
-//     description:
-//       "Open-source illustrations for any idea you can imagine and create.",
-//     href: "https://undraw.co/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://undraw.co/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-2",
-//   },
-// ];
 type Tool = {
   id: number;
   name: string;
@@ -61,12 +27,19 @@ type Tool = {
   category: string;
 };
 export default function Illustration() {
+  const [loading, setLoading] = useState(true);
   const [tools, setTools] = useState<Tool[]>([]);
   useEffect(() => {
     axios
       .get("https://dev-tools-backend-aar6.onrender.com/tools")
-      .then((res) => setTools(res.data))
-      .catch((err) => console.error("Failed to fetch tools", err));
+      .then((res) => {
+        setTools(res.data);
+        setLoading(false); // ✅ stop showing skeleton
+      })
+      .catch((err) => {
+        console.error("Failed to fetch tools", err);
+        setLoading(false); // also stop loading on error
+      });
   }, []);
 
   const getBackground = (url: string) => (
@@ -100,15 +73,17 @@ export default function Illustration() {
         return "lg:row-start-auto lg:col-start-auto";
     }
   };
-  const filteredTools = tools.filter((tool) => tool.category === "illustration");
+  const filteredTools = tools.filter(
+    (tool) => tool.category === "illustration"
+  );
   const groupedTools = chunkArray(filteredTools, 5);
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <div className="fixed flex justify-center items-center h-screen z-50">
-                  <Dialog03 />
-                </div>
+          <Dialog03 />
+        </div>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -126,25 +101,42 @@ export default function Illustration() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {groupedTools.map((group, groupIndex) => (
-            <BentoGrid key={groupIndex} className="lg:grid-rows-3">
-              {group.map((tool, index) => {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // const absoluteIndex = groupIndex * 5 + index;
-                return (
-                  <BentoCard
-                    key={tool.id}
-                    name={tool.name}
-                    description={tool.description}
-                    href={tool.link}
-                    cta="Browse"
-                    background={getBackground(tool.link)}
-                    className={getGridPosition(index)} // local index 0–4
-                  />
-                );
-              })}
-            </BentoGrid>
-          ))}
+          {loading
+            ? // Show skeletons while loading
+              Array(2)
+                .fill(0)
+                .map((_, groupIndex) => (
+                  <div key={groupIndex} className="flex gap-10 justify-between">
+                    {Array(3)
+                      .fill(0)
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="flex flex-col flex-1 gap-2 h-64 justify-end"
+                        >
+                          <Skeleton className="h-6 w-1/2 rounded-xl mb-3" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                        </div>
+                      ))}
+                  </div>
+                ))
+            : groupedTools.map((group, groupIndex) => (
+                <BentoGrid key={groupIndex} className="lg:grid-rows-3">
+                  {group.map((tool, index) => (
+                    <BentoCard
+                      key={tool.id}
+                      name={tool.name}
+                      description={tool.description}
+                      href={tool.link}
+                      cta="Browse"
+                      background={getBackground(tool.link)}
+                      className={getGridPosition(index)}
+                    />
+                  ))}
+                </BentoGrid>
+              ))}
         </div>
       </SidebarInset>
     </SidebarProvider>

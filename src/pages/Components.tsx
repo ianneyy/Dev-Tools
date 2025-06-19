@@ -17,119 +17,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 // import { Button } from "@/components/ui/button";
 import Dialog03 from "@/components/dialog-1";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// const features = [
-//   {
-//     name: "21st.dev",
-//     description: "Discover, share & remix the best UI components",
-//     href: "https://21st.dev/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://21st.dev/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
-//   },
-//   {
-//     name: "Shadcn",
-//     description: "Build your React component library",
-//     href: "https://ui.shadcn.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://ui.shadcn.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
-//   },
-//   {
-//     name: "DaisyUI",
-//     description: "Faster, cleaner, easier Tailwind CSS development",
-//     href: "https://daisyui.com/",
-//     cta: "Learn more",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://daisyui.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
-//   },
-//   {
-//     name: "HeadlessUI",
-//     description: "Faster, cleaner, easier Tailwind CSS development",
-//     href: "https://headlessui.com/",
-//     cta: "Learn more",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://headlessui.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-2",
-//   },
-//   {
-//     name: "Radix UI",
-//     description: "Unstyled, accessible components for React",
-//     href: "https://www.radix-ui.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://www.radix-ui.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:col-start-3 lg:col-end-3 lg:row-start-2 lg:row-end-4",
-//   },
-// ];
 
-// const features2 = [
-//   {
-//     name: "Blade Icons",
-//     description:
-//       "A package to easily make use of SVG icons in your Laravel Blade views. Choose from a wide selection of icon sets. ",
-//     href: "https://blade-ui-kit.com/blade-icons",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://blade-ui-kit.com/blade-icons"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-1 lg:col-end-2",
-//   },
-//   {
-//     name: "Flowbite",
-//     description:
-//       "Build websites even faster with components on top of Tailwind CSS",
-//     href: "https://flowbite.com/",
-//     cta: "Browse",
-//     background: (
-//       <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none z-0">
-//         <iframe
-//           src="https://flowbite.com/"
-//           className="h-full w-full scale-[1.2] transform rounded-xl"
-//         />
-//       </div>
-//     ),
-//     className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-3",
-//   },
-// ];
 type Tool = {
   id: number;
   name: string;
@@ -138,12 +28,19 @@ type Tool = {
   category: string;
 };
 export default function Components() {
+  const [loading, setLoading] = useState(true);
   const [tools, setTools] = useState<Tool[]>([]);
   useEffect(() => {
     axios
       .get("https://dev-tools-backend-aar6.onrender.com/tools")
-      .then((res) => setTools(res.data))
-      .catch((err) => console.error("Failed to fetch tools", err));
+      .then((res) => {
+        setTools(res.data);
+        // setLoading(false); // ✅ stop showing skeleton
+      })
+      .catch((err) => {
+        console.error("Failed to fetch tools", err);
+        setLoading(false); // also stop loading on error
+      });
   }, []);
 
   const getBackground = (url: string) => (
@@ -207,30 +104,42 @@ export default function Components() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {groupedTools.map((group, groupIndex) => (
-            <BentoGrid key={groupIndex} className="lg:grid-rows-3">
-              {group.map((tool, index) => {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // const absoluteIndex = groupIndex * 5 + index;
-                return (
-                  <BentoCard
-                    key={tool.id}
-                    name={tool.name}
-                    description={tool.description}
-                    href={tool.link}
-                    cta="Browse"
-                    background={getBackground(tool.link)}
-                    className={getGridPosition(index)} // local index 0–4
-                  />
-                );
-              })}
-            </BentoGrid>
-          ))}
-          {/* <BentoGrid className="lg:grid-rows-3">
-            {features2.map((features2) => (
-              <BentoCard key={features2.name} {...features2} />
-            ))}
-          </BentoGrid> */}
+          {loading
+            ? // Show skeletons while loading
+              Array(2)
+                .fill(0)
+                .map((_, groupIndex) => (
+                  <div key={groupIndex} className="flex gap-10 justify-between">
+                    {Array(3)
+                      .fill(0)
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="flex flex-col flex-1 gap-2 h-64 justify-end"
+                        >
+                          <Skeleton className="h-6 w-1/2 rounded-xl mb-3" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                          <Skeleton className="h-6 w-full rounded-xl" />
+                        </div>
+                      ))}
+                  </div>
+                ))
+            : groupedTools.map((group, groupIndex) => (
+                <BentoGrid key={groupIndex} className="lg:grid-rows-3">
+                  {group.map((tool, index) => (
+                    <BentoCard
+                      key={tool.id}
+                      name={tool.name}
+                      description={tool.description}
+                      href={tool.link}
+                      cta="Browse"
+                      background={getBackground(tool.link)}
+                      className={getGridPosition(index)}
+                    />
+                  ))}
+                </BentoGrid>
+              ))}
         </div>
       </SidebarInset>
     </SidebarProvider>
